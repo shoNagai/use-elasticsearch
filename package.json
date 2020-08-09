@@ -1,12 +1,16 @@
 {
   "name": "use-elasticsearch",
   "version": "0.0.1",
+  "description": "hooks for elasticsearch",
   "author": "shoNagai",
-  "repository": "shoNagai/use-elasticsearch",
-  "main": "dist/index.js",
+  "repository": "https://github.com/shoNagai/use-elasticsearch",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
   "license": "MIT",
   "scripts": {
-    "build": "tsc"
+    "start": "tsc --watch",
+    "build": "yarn clean && tsc",
+    "clean": "rm -rf ./dist"
   },
   "peerDependencies": {
     "react": "^16.0.0"

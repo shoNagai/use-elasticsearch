@@ -1,6 +1,6 @@
 import * as React from "react";
 import client from "./client";
-import { Hit, SearchRequest } from "./typings";
+import { Hit, SearchRequest } from "./type";
 
 const { useEffect, useReducer } = React;
 
@@ -52,9 +52,9 @@ const createReducer = <T>() => (
   }
 };
 
-const useElasticsearch = <T>(index: string, requestBody: SearchRequest) => {
-  const reducer = createReducer<T>();
-  const [state, dispatch] = useReducer(reducer, {
+function useElasticsearch<T>(index: string, requestBody?: SearchRequest) {
+  const dataFetchReducer = createReducer<T>();
+  const [state, dispatch] = useReducer(dataFetchReducer, {
     status: "init",
     data: [],
     error: null,
@@ -65,11 +65,21 @@ const useElasticsearch = <T>(index: string, requestBody: SearchRequest) => {
       type: "setStatus",
       status: "loading",
     });
-    client.search<T>(index, requestBody).then(([response, error]) => {
-      if (error || !response) {
+    (async () => {
+      const response = await client
+        .search<T>(index, requestBody)
+        .catch((e: Error) => {
+          const cause = new Error("response is null");
+          dispatch({
+            type: "setError",
+            error: e || cause,
+          });
+          return cause;
+        });
+      if (response instanceof Error) {
         dispatch({
           type: "setError",
-          error: error || new Error("response is null"),
+          error: response,
         });
         return;
       }
@@ -77,10 +87,10 @@ const useElasticsearch = <T>(index: string, requestBody: SearchRequest) => {
         type: "setData",
         data: response.hits.hits,
       });
-    });
-  }, []);
+    })();
+  }, [index, requestBody]);
 
   return state;
-};
+}
 
 export default useElasticsearch;

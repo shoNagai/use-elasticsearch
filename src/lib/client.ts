@@ -1,13 +1,14 @@
-import { SearchRequest, SearchResponse } from "./typings";
+import { SearchRequest, SearchResponse } from "./type";
 
 const API_SEARCH = "_search";
 
 const search = <T>(
   index: string,
-  request: SearchRequest
-): Promise<[SearchResponse<T>, null] | [null, Error]> => {
+  request?: SearchRequest
+): Promise<SearchResponse<T> | Error> => {
   return new Promise<SearchResponse<T>>((resolve, reject) => {
-    fetch(`${process.env.ELASTICSEARCH_NODE_URL}/${index}/${API_SEARCH}`, {
+    const url = `${process.env.ELASTICSEARCH_NODE_URL}/${index}/${API_SEARCH}`;
+    fetch(url, {
       method: "POST",
       headers: {
         Authorization:
@@ -17,10 +18,9 @@ const search = <T>(
               ":" +
               process.env.ELASTICSEARCH_PASSWORD
           ),
-        Accept: "application/json",
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(request),
+      body: request ? JSON.stringify(request) : undefined,
     })
       .then((res) => res.json())
       .then((data) => {
@@ -29,14 +29,17 @@ const search = <T>(
           reject(cause);
           return;
         }
-        resolve(data.results);
+        return resolve(data.results);
+      })
+      .catch((e: Error) => {
+        return reject(e);
       });
   })
-    .then((addresses) => {
-      return [addresses, null] as [SearchResponse<T>, null];
+    .then((response) => {
+      return response as SearchResponse<T>;
     })
     .catch((e: Error) => {
-      return [null, e] as [null, Error];
+      return e;
     });
 };
 

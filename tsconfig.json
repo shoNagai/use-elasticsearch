@@ -1,23 +1,19 @@
 {
   "compilerOptions": {
-    "alwaysStrict": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
-    "jsx": "preserve",
-    "lib": ["dom", "es2018"],
-    "module": "CommonJS",
-    "moduleResolution": "node",
-    "noFallthroughCasesInSwitch": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "target": "esnext",
-    "outDir": "dist",
+    "target": "es5",
+    "module": "commonjs",
+    "lib": ["dom", "es2015"],
+    "allowJs": false,
+    "checkJs": false,
+    "jsx": "react",
     "declaration": true,
-    "emitDeclarationOnly": true
-  },
-  "include": ["src"]
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "isolatedModules": false,
+    "strict": true,
+    "noImplicitAny": true,
+    "strictNullChecks": true,
+    "moduleResolution": "node",
+    "esModuleInterop": true
+  }
 }
