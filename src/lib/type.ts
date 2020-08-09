@@ -6,7 +6,7 @@ export type QueryContext = { [field: string]: string };
 
 export type Query = {
   bool: {
-    [key in QueryType]: { [key in QueryClauses]: QueryContext };
+    [key in QueryType]?: { [key in QueryClauses]?: QueryContext }[];
   };
 };
 
